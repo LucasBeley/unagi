@@ -1,0 +1,28 @@
+{% extends 'admin/change_form.html' %}
+{% load static %}
+
+{% comment %}
+The all point here is to add a preview of the post in the admin page. It is done by
+adding it on the right of the page. Thus, the `fieldsets-and-preview-container` div to
+add some flexbox magic.
+{% endcomment %}
+
+{% block field_sets %}
+<div id="fieldsets-and-preview-container">
+    <div id="fieldsets-container">
+        {% for fieldset in adminform %}
+        {% include "admin/includes/fieldset.html" %}
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block after_related_objects %}
+    <div id="preview-container">
+    </div>
+</div>
+{% endblock after_related_objects %}
+
+{% block admin_change_form_document_ready %}
+{{ block.super }}
+<script src="{% static 'blog/preview.js' %}"></script>
+{% endblock %}

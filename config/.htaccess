@@ -1,0 +1,10 @@
+RewriteEngine On
+RewriteBase /
+RewriteRule ^(unagi/media/.*)$ - [L]
+RewriteRule ^(unagi/static/.*)$ - [L]
+RewriteRule ^(unagi/admin_media/.*)$ - [L]
+RewriteRule ^(unagi/unagi/dispatch\.wsgi/.*)$ - [L]
+RewriteRule ^(media/.*)$ unagi/$1 [PT,L]
+RewriteRule ^(static/.*)$ unagi/$1 [PT,L]
+RewriteRule ^(admin_media/.*)$ unagi/$1 [PT,L]
+RewriteRule ^(.*)$ unagi/unagi/dispatch.wsgi/$1 [QSA,PT,L]

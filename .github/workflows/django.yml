@@ -1,0 +1,78 @@
+name: Django CI
+
+on:
+    workflow_call:
+    workflow_dispatch:
+    push:
+        branches: ["master"]
+    pull_request:
+        branches: ["master"]
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+
+        services:
+            postgres_main:
+                image: postgres:12
+                env:
+                    POSTGRES_USER: admin
+                    POSTGRES_PASSWORD: admin
+                    POSTGRES_DB: unagi
+                ports:
+                    - 5432:5432
+                options: >-
+                    --health-cmd pg_isready 
+                    --health-interval 10s 
+                    --health-timeout 5s 
+                    --health-retries 5
+
+        strategy:
+            matrix:
+                python-version: ["3.10", "3.11", "3.12"]
+
+        steps:
+            - uses: actions/checkout@v4
+            - name: Set up Python ${{ matrix.python-version }}
+              uses: actions/setup-python@v5
+              with:
+                  python-version: ${{ matrix.python-version }}
+                  cache: "pip"
+            - name: Install Dependencies
+              run: |
+                  python -m pip install --upgrade pip
+                  pip install -r requirements.txt
+            - name: Run Tests
+              run: |
+                  cd unagi
+                  python manage.py test --settings=unagi.settings_test
+
+    collectstatic:
+        runs-on: ubuntu-latest
+        needs: test
+        env: 
+            SECRET_KEY: secret_key
+            DATABASE_URL: psql://localhost
+        steps:
+            - uses: actions/checkout@v4
+            - name: Set up Python 3.12
+              uses: actions/setup-python@v5
+              with:
+                  python-version: "3.12"
+                  cache: "pip"
+            - name: Install Dependencies
+              run: |
+                  python -m pip install --upgrade pip
+                  pip install -r requirements.txt
+            - name: Collect static files
+              run: |
+                  cd unagi
+                  python manage.py collectstatic --noinput
+                  rm -rf static/*
+                  mv build/static/* static/
+            - name: Archive static artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                  name: staticfiles
+                  path: |
+                      unagi/static

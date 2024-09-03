@@ -1,0 +1,47 @@
+name: Deploy App
+
+on:
+    # Enables manually triggering of Workflow with file synchronization option
+    workflow_dispatch:
+      inputs:
+        sync:
+          description: "File synchronization"
+          required: true
+          default: "full"
+    release:
+        types: [published]
+
+jobs:
+    build:
+        uses: LucasBeley/unagi/.github/workflows/django.yml@master
+
+    deploy:
+        runs-on: ubuntu-latest
+        needs: build
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                fetch-depth: 0
+            - name: Download static artifacts
+              uses: actions/download-artifact@v4
+              with:
+                  name: staticfiles
+                  path: unagi/static
+            - name: Deploy to host via SFTP
+              uses: milanmk/actions-file-deployer@master
+              with:
+                remote-protocol: "sftp"
+                remote-host: ${{ secrets.SSH_HOST }}
+                remote-user: ${{ secrets.SSH_USER }}
+                remote-password: ${{ secrets.SSH_KEY }}
+                remote-path: "/code/"
+                local-path: unagi/
+            - name: Deploy config to host via FTP
+              uses: milanmk/actions-file-deployer@master
+              with:
+                remote-protocol: "sftp"
+                remote-host: ${{ secrets.SSH_HOST }}
+                remote-user: ${{ secrets.SSH_USER }}
+                remote-password: ${{ secrets.SSH_KEY }}
+                remote-path: "/code/"
+                local-path: config/

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="post-container" class="centered-flex-container">
+    <a href="{% url "blog:index" %}" class="flat-link"><</a>
+    <h1>{{ post.title }}</h1>
+    <p class="meta-info">Published on {{ post.posted_at }}</p>
+    {% if post.cover_image_url %}
+        <img src={{ post.cover_image_url }}/>
+    {% endif %}
+    {{ post.content|safe }}
+</div>
+{% endblock content %}

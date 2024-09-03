@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="index-container" class="centered-flex-container">
+    {% for post in post_list %}
+        <a href="{% url "blog:post" post.id %}" class="flat-link">
+            <div class="post-card">
+                {% if post.cover_image_url %}
+                    <div class="cover-image-container">
+                        <img class="cover-image" src={{ post.cover_image_url }} alt="Cover image"/>
+                    </div>
+                {% endif %}
+                <div class="writing-container">
+                    <h3>{{ post.title }}</h3>
+                    <p class="meta-info">Published on {{ post.posted_at }}</p>
+                    <div class="post-overview">{{ post.content|safe|truncatechars_html:120 }}</div>
+                </div>
+            </div>
+        </a>
+    {% endfor %}
+
+    <div>
+        <span>
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}" class="flat-link"><</a>
+            {% else %}
+                <span class="disabled"><</span>
+            {% endif %}
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="flat-link">></a>
+            {% else %}
+                <span class="disabled">></span>
+            {% endif %}
+        </span>
+    </div>
+</div>
+{% endblock content %}

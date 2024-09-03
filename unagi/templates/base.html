@@ -1,0 +1,21 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Unagi blog</title>
+        <link rel="shortcut icon" type="image/svg" href="{% static 'favicon.svg' %}"/>
+        <link rel="stylesheet" href="{% static 'style.css' %}">
+        <link rel="stylesheet" href="{% static 'blog/style.css' %}">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+
+    <body>
+    {% block header %}
+    <header>
+        <h1>Unagi blog</h1>
+    </header>
+    {% endblock header %}
+    {% block content %}{% endblock content %}
+    </body>
+</html>
