@@ -1,47 +1,25 @@
-name: Deploy App
+name: Deploy
 
 on:
-    # Enables manually triggering of Workflow with file synchronization option
-    workflow_dispatch:
-      inputs:
-        sync:
-          description: "File synchronization"
-          required: true
-          default: "full"
-    release:
-        types: [published]
+  push:
+    branches: [main]
 
 jobs:
-    build:
-        uses: LucasBeley/unagi/.github/workflows/django.yml@master
+  test:
+    uses: LucasBeley/unagi/.github/workflows/django.yml@main
 
-    deploy:
-        runs-on: ubuntu-latest
-        needs: build
-        steps:
-            - uses: actions/checkout@v4
-              with:
-                fetch-depth: 0
-            - name: Download static artifacts
-              uses: actions/download-artifact@v4
-              with:
-                  name: staticfiles
-                  path: unagi/static
-            - name: Deploy to host via SFTP
-              uses: milanmk/actions-file-deployer@master
-              with:
-                remote-protocol: "sftp"
-                remote-host: ${{ secrets.SSH_HOST }}
-                remote-user: ${{ secrets.SSH_USER }}
-                remote-password: ${{ secrets.SSH_KEY }}
-                remote-path: "/code/"
-                local-path: unagi/
-            - name: Deploy config to host via FTP
-              uses: milanmk/actions-file-deployer@master
-              with:
-                remote-protocol: "sftp"
-                remote-host: ${{ secrets.SSH_HOST }}
-                remote-user: ${{ secrets.SSH_USER }}
-                remote-password: ${{ secrets.SSH_KEY }}
-                remote-path: "/code/"
-                local-path: config/
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: deploy
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            cd /home/deploy/unagi
+            git pull
+            docker compose -f docker-compose.prod.yml up --build -d
+            docker image prune -f

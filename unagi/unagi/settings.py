@@ -12,21 +12,20 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import os
 import sys
-from django.conf.global_settings import SECURE_SSL_REDIRECT
 import environ
 from pathlib import Path
 
 TESTING = len(sys.argv) > 1 and sys.argv[1] == "test"
 
 env = environ.Env(
-    # set casting, default value
     DEBUG=(bool, False)
 )
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-environ.Env.read_env(os.path.join(BASE_DIR, ".env.test" if TESTING else ".env"))
+env_file = os.path.join(BASE_DIR, ".env.test" if TESTING else ".env")
+if os.path.exists(env_file):
+    environ.Env.read_env(env_file)
 
 SECRET_KEY = env("SECRET_KEY")
 
@@ -53,6 +52,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -126,6 +126,7 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "build/static")
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",
@@ -138,6 +139,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Security
 
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_SSL_REDIRECT = True
 SECURE_HSTS_SECONDS = 3600
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
