@@ -6,3 +6,5 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = False
 SECURE_HSTS_PRELOAD = False
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
+
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
