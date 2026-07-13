@@ -8,6 +8,8 @@ services:
     env_file: unagi/.env
     ports:
       - "8001:8000"
+    volumes:
+      - static_images:/app/static/images
     depends_on:
       db:
         condition: service_healthy
@@ -27,3 +29,4 @@ services:
 
 volumes:
   postgres_data:
+  static_images:
