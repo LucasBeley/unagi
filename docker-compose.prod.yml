@@ -14,7 +14,7 @@ services:
     restart: unless-stopped
 
   db:
-    image: postgres:12
+    image: postgres:17
     env_file: unagi/.env
     volumes:
       - postgres_data:/var/lib/postgresql/data

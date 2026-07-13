@@ -1,0 +1,28 @@
+[
+  {
+    "model": "blog.post",
+    "pk": 1,
+    "fields": {
+      "title": "Bienvenue sur le blog",
+      "cover_image_url": null,
+      "created_at": "2025-01-10T10:00:00Z",
+      "updated_at": "2025-01-10T10:00:00Z",
+      "posted_at": "2025-01-10T10:00:00Z",
+      "hidden_at": null,
+      "content": "Bienvenue sur ce blog. Ici je partage mes notes, expériences et réflexions sur le développement web et les projets perso.\n\nCe premier article marque le lancement du site."
+    }
+  },
+  {
+    "model": "blog.post",
+    "pk": 2,
+    "fields": {
+      "title": "Migration vers un nouveau VPS",
+      "cover_image_url": null,
+      "created_at": "2025-03-15T14:30:00Z",
+      "updated_at": "2025-03-15T14:30:00Z",
+      "posted_at": "2025-03-15T14:30:00Z",
+      "hidden_at": null,
+      "content": "J'ai récemment migré l'ensemble de mes apps perso vers un nouveau VPS. L'occasion de revoir l'architecture : Caddy en reverse proxy, Docker pour les apps avec runtime, PM2 pour les apps Node.\n\nLe résultat est bien plus propre et maintenable qu'avant."
+    }
+  }
+]
