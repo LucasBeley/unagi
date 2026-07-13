@@ -9,6 +9,10 @@
     @media (max-width: 768px) {
         flex-direction: column;
 
+        & > div {
+            margin-right: 0;
+        }
+
         & #preview-container {
             border-left: 0;
             border-top: 1px solid #ddd;
